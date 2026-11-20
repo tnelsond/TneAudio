@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14161a">
+<meta name="description" content="Record from USB audio interfaces and microphones with non-destructive levels, filters, noise reduction and gating.">
+<title>USB Recorder</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="led"></span>USB Recorder</div>
+  <button id="installBtn" class="ghost" hidden>Install app</button>
+</header>
+
+<main class="grid">
+  <section class="card" id="inputCard">
+    <h2>Input</h2>
+    <div class="row">
+      <select id="deviceSelect" aria-label="Input device"><option value="">System default input</option></select>
+      <button id="refreshDevices" class="ghost icon" title="Refresh device list" aria-label="Refresh device list">↻</button>
+    </div>
+    <p class="small" id="deviceInfo">Plug in your USB mic or interface, then tap Arm input to allow access.</p>
+    <div class="row">
+      <button id="armBtn">Arm input</button>
+      <label class="switch"><input type="checkbox" id="monitorToggle"><span></span>Monitor</label>
+    </div>
+    <div class="meters">
+      <div class="meter"><span class="ml">In</span><canvas id="meterIn"></canvas><span class="mv" id="meterInVal">−∞</span></div>
+      <div class="meter"><span class="ml">Out</span><canvas id="meterOut"></canvas><span class="mv" id="meterOutVal">−∞</span></div>
+    </div>
+    <div class="row">
+      <button id="recBtn" class="rec"><span class="recdot"></span><span id="recLabel">Record</span></button>
+      <span class="timer" id="recTimer">0:00.0</span>
+    </div>
+    <p class="hint">The raw input is always saved untouched. Levels, filters, noise reduction and the gate are applied on playback and export only, so you can change or switch them off at any time.</p>
+  </section>
+
+  <section class="card" id="takesCard">
+    <div class="row between">
+      <h2>Takes <span class="count" id="takeCount"></span></h2>
+      <button id="importBtn" class="ghost">Import audio file</button>
+    </div>
+    <input type="file" id="importInput" accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.opus,.flac,.webm" multiple hidden>
+    <ul id="takeList" class="takes"></ul>
+    <p class="small empty" id="takesEmpty">No recordings yet. Record, or import an existing audio file to process it. Takes are stored on this device.</p>
+  </section>
+
+  <section class="card wide" id="editorCard" hidden>
+    <div class="row between">
+      <input id="takeName" class="title-input" aria-label="Take name" type="text">
+      <span class="small" id="takeMeta"></span>
+    </div>
+    <div class="wave-wrap"><canvas id="wave"></canvas></div>
+    <div class="row between small"><span id="selInfo"></span><span id="posInfo" class="mono">0:00.0</span></div>
+    <div class="row wrap">
+      <button id="playBtn">▶ Play</button>
+      <label class="switch"><input type="checkbox" id="loopToggle"><span></span>Loop</label>
+      <label class="switch"><input type="checkbox" id="bypassToggle"><span></span>Bypass all (A/B)</label>
+    </div>
+    <div class="row wrap">
+      <button id="learnBtn" class="ghost" disabled>Learn noise from selection</button>
+      <button id="clearSelBtn" class="ghost" disabled>Clear selection</button>
+    </div>
+    <div class="row wrap">
+      <button id="exportBtn" class="primary">Export processed WAV</button>
+      <button id="exportRawBtn" class="ghost">Export raw WAV</button>
+      <button id="deleteBtn" class="ghost danger">Delete take</button>
+    </div>
+  </section>
+
+  <section class="card wide" id="fxCard">
+    <div class="row between">
+      <h2>Processing <span class="small" id="fxTarget">· live input</span></h2>
+      <div class="row wrap" style="margin:0">
+        <button id="copyFx" class="ghost">Copy</button>
+        <button id="pasteFx" class="ghost" disabled>Paste</button>
+        <button id="resetFx" class="ghost">Reset</button>
+      </div>
+    </div>
+    <div class="spec-wrap"><canvas id="spectrum"></canvas></div>
+    <div id="controls" class="controls"></div>
+    <p class="small">Double-tap a control's name to reset it. Each take keeps its own settings.</p>
+  </section>
+</main>
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="app.js" type="module"></script>
+</body>
+</html>
